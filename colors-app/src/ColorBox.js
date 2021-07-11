@@ -8,7 +8,7 @@ export const ColorBox = (props) => {
     useEffect(() => {
         const timeout = setTimeout(() => {
             setCopied(false);
-        },1200);
+        },1300);
 
         return () => clearTimeout(timeout);
     },[copied]);
