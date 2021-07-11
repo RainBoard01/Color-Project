@@ -13,13 +13,15 @@ export const Palette = (props) => {
     return (
         <div className="Palette">
             {/* Navbar goes here */}
-            <Slider 
-                defaultValue={ level }
-                min={ 100 }
-                max={ 900 }
-                onAfterChange={ setLevel }
-                step={ 100 }
-            />
+            <div className="slider">
+                <Slider 
+                    defaultValue={ level }
+                    min={ 100 }
+                    max={ 900 }
+                    onChange={ setLevel }
+                    step={ 100 }
+                />
+            </div>
             <div className="Palette-colors">
                 {/* bunch of color boxes*/}
                 { colorBoxes }
