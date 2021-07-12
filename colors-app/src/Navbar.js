@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import { Link } from "react-router-dom";
 import Slider from "rc-slider";
 
 import { IconButton, MenuItem, Select, Snackbar } from '@material-ui/core';
@@ -24,7 +25,7 @@ export const Navbar = props => {
     return (
         <header className="navbar">
             <div className="logo">
-                <a href="/">reactcolorpicker</a>
+                <Link to="/">reactcolorpicker</Link>
             </div>
             <div className="slider-container">
                 <span>Level: { level }</span>
