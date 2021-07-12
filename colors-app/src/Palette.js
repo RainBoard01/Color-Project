@@ -5,22 +5,31 @@ import "./Palette.css";
 
 export const Palette = (props) => {
     const [level, setLevel] = useState(500);
-    const [format, setFormat] = useState("hex")
+    const [format, setFormat] = useState("hex");
 
-    const colorBoxes = props.palette.colors[level].map(color => (
-        <ColorBox background={ color[format] } name={ color.name }/>
+    const { colors, paletteName, emoji } = props.palette;
+
+    const colorBoxes = colors[level].map(color => (
+        <ColorBox background={color[format]} name={color.name} key={ color.id }/>
     ));
 
     return (
         <div className="Palette">
-            {/* Navbar goes here */}
-            <Navbar level={ level } setLevel={ setLevel } format={ format } setFormat={ setFormat }/>
+            <Navbar
+                level={level}
+                setLevel={setLevel}
+                format={format}
+                setFormat={setFormat}
+            />
             <div className="Palette-colors">
-                {/* bunch of color boxes*/}
                 { colorBoxes }
             </div>
-            {/* footer eventually */}
-
+            <footer className="Palette-footer">
+                { paletteName }
+                <span className="emoji">
+                    { emoji }
+                </span>
+            </footer>
         </div>
     )
 }
