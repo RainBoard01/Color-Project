@@ -1,9 +1,14 @@
 import React from 'react';
 import "./PaletteList.css";
-import { MiniPalette } from './MiniPalette';
+import { Card } from './Card';
 
 export const PaletteList = props => {
     const { palettes } = props;
+
+    const cards = palettes.map(palette => (
+        <Card {...palette} key={ palette.id } />
+    ));
+
     return (
         <div className="paletteList">
             <div className="container">
@@ -11,9 +16,7 @@ export const PaletteList = props => {
                     <h1>React Colors</h1>
                 </nav>
                 <div className="palettes">
-                    {palettes.map(palette => (
-                        <MiniPalette { ...palette } />
-                    ))}
+                    { cards }
                 </div>
             </div>
         </div>
