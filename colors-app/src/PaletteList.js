@@ -6,8 +6,10 @@ export const PaletteList = props => {
     const { palettes } = props;
 
     const cards = palettes.map(palette => (
-        <Card {...palette} key={ palette.id } />
+        <Card handleClick={ () => goToPalette(palette.id) } {...palette} key={ palette.id } />
     ));
+
+    const goToPalette = id => props.history.push(`/palette/${id}`);
 
     return (
         <div className="paletteList">

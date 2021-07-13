@@ -2,7 +2,7 @@ import React from 'react';
 import "./Card.css";
 
 export const Card = props => {
-    const { paletteName, emoji, colors } = props;
+    const { paletteName, emoji, colors, handleClick } = props;
 
     const miniColorBoxes = colors.map(color => (
         <div
@@ -13,7 +13,7 @@ export const Card = props => {
     ));
 
     return (
-        <div className="card">
+        <div className="card" onClick={ handleClick }>
             <div className="colors">
                 { miniColorBoxes }         
             </div>
