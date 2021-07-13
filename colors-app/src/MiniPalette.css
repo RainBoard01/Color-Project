@@ -1,0 +1,31 @@
+.card {
+  background-color: white;
+  border-radius: 5px;
+  padding: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  cursor: pointer;
+}
+
+.colors {
+  background-color: grey;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  color: black;
+  padding-top: 0.5rem;
+  font-size: 1rem;
+  position: relative;
+}
+
+.emoji {
+  margin-left: 0.5rem;
+  font-size: 1.5rem;
+}
