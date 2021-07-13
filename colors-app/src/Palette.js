@@ -7,10 +7,15 @@ export const Palette = (props) => {
     const [level, setLevel] = useState(500);
     const [format, setFormat] = useState("hex");
 
-    const { colors, paletteName, emoji } = props.palette;
+    const { colors, paletteName, emoji, id } = props.palette;
 
     const colorBoxes = colors[level].map(color => (
-        <ColorBox background={color[format]} name={color.name} key={ color.id }/>
+        <ColorBox
+            background={color[format]}
+            name={color.name}
+            key={color.id}
+            colorUrl={ `/palette/${ id }/${ color.id }` }
+        />
     ));
 
     return (

@@ -14,7 +14,7 @@ export const ColorBox = (props) => {
         return () => clearTimeout(timeout);
     },[copied]);
 
-    const { name, background } = props;
+    const { name, background, colorUrl } = props;
     return (
         <CopyToClipboard text={ background } onCopy={ () => setCopied(true) }>
             <div style={{ background }} className="ColorBox">
@@ -29,7 +29,7 @@ export const ColorBox = (props) => {
                     </div>
                     <button className="copy-button">Copy</button>
                 </div>
-                <Link to="/" onClick={ e => e.stopPropagation() }>
+                <Link to={ colorUrl } onClick={ e => e.stopPropagation() }>
                     <span className="see-more">MORE</span>
                 </Link>
             </div>
