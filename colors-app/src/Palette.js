@@ -11,10 +11,11 @@ export const Palette = (props) => {
 
     const colorBoxes = colors[level].map(color => (
         <ColorBox
-            background={color[format]}
-            name={color.name}
-            key={color.id}
-            colorUrl={ `/palette/${ id }/${ color.id }` }
+            background={ color[format] }
+            name={ color.name }
+            key={ color.id }
+            colorUrl={ `/palette/${id}/${color.id}` }
+            showLink={ true }
         />
     ));
 
