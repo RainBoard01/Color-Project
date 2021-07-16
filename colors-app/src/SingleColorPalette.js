@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { ColorBox } from './ColorBox';
+import { Navbar } from './Navbar';
+import { PaletteFooter } from './PaletteFooter';
 
 export const SingleColorPalette = props => { 
     const { palette, colorId } = props;
+
+    const [format, setFormat] = useState("hex");
 
     const gatherShades = (palette, colorToFilterBy) => {
         let shades = [];
@@ -21,8 +25,8 @@ export const SingleColorPalette = props => {
 
     const colorBoxes = shades.map(color => (
         <ColorBox
-            background={color.hex}
-            name={color.name}
+            background={ color[format] }
+            name={ color.name }
             key={ color.name.replace(/ /g,"-") }
             showLink={ false }
         />
@@ -30,8 +34,13 @@ export const SingleColorPalette = props => {
 
     return (
         <div className="Palette">
-            <h1>Single Color Palette</h1>
-            <div className="Palette-colors">{ colorBoxes }</div>
+            <Navbar
+                showSlider={false}
+                format={ format }
+                setFormat={ setFormat }
+            />
+            <div className="Palette-colors">{colorBoxes}</div>
+            <PaletteFooter paletteName={palette.paletteName} emoji={ palette.emoji }/>
         </div>
     )
 }
