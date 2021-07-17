@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ColorBox } from './ColorBox';
 import { Navbar } from './Navbar';
 import { PaletteFooter } from './PaletteFooter';
 
 export const SingleColorPalette = props => { 
     const { palette, colorId } = props;
-
     const [format, setFormat] = useState("hex");
 
     const gatherShades = (palette, colorToFilterBy) => {
@@ -21,7 +21,7 @@ export const SingleColorPalette = props => {
         return shades.slice(1);
     };
 
-    const [shades, setShades] = useState(gatherShades(palette, colorId));
+    const shades = gatherShades(palette, colorId);
 
     const colorBoxes = shades.map(color => (
         <ColorBox
@@ -33,14 +33,19 @@ export const SingleColorPalette = props => {
     ))
 
     return (
-        <div className="Palette">
+        <div className="Single-Color-Palette Palette">
             <Navbar
                 showSlider={false}
                 format={ format }
                 setFormat={ setFormat }
             />
-            <div className="Palette-colors">{colorBoxes}</div>
-            <PaletteFooter paletteName={palette.paletteName} emoji={ palette.emoji }/>
+            <div className="Palette-colors">
+                { colorBoxes }
+                <div className="go-back ColorBox">
+                    <Link to={ `/palette/${ palette.id }` } className="back-button">GO BACK</Link>
+                </div>
+            </div>
+            <PaletteFooter paletteName={ palette.paletteName } emoji={ palette.emoji }/>
         </div>
     )
 }
