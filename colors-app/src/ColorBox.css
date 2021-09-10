@@ -54,10 +54,17 @@
   width: 90%;
   left: 0px;
   bottom: 0px;
-  color: black;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 12px;
+}
+
+.white-font {
+  color: white;
+}
+
+.ColorBox .black-font {
+  color: rgba(0, 0, 0, 0.5);
 }
 
 .see-more {
