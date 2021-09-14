@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import "./PaletteList.css";
 import { Card } from './Card';
 
@@ -16,6 +17,7 @@ export const PaletteList = props => {
             <div className="container">
                 <nav className="nav">
                     <h1>React Colors</h1>
+                    <Link className="createPaletteLink" to="/palette/new">Create Palette</Link>
                 </nav>
                 <div className="palettes">
                     { cards }
