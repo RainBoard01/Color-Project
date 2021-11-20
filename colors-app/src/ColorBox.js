@@ -25,17 +25,17 @@ export const ColorBox = (props) => {
                 <div style={{ background }} className={`copy-overlay ${ copied && "show" }`}/>
                 <div className={`copy-msg ${ copied && "show" }`}>
                     <h1>Copied!</h1>
-                    <p className={ isLightColor && "black-font" }>{ background }</p>
+                    <p className={ isLightColor ? "black-font" : "" }>{ background }</p>
                 </div>
                 <div className="copy-container">
                     <div className="box-content">
-                        <span className={ isDarkColor && "white-font" }>{ name }</span>
+                        <span className={ isDarkColor ? "white-font" : "" }>{ name }</span>
                     </div>
-                    <button className={ `copy-button ${ isLightColor && "black-font" }` }>Copy</button>
+                    <button className={ `copy-button ${ isLightColor ? "black-font" : "" }` }>Copy</button>
                 </div>
                 { showLink && (
                     <Link to={colorUrl} onClick={e => e.stopPropagation()}>
-                        <span className={ `see-more ${ isLightColor && "black-font" }` }>MORE</span>
+                        <span className={ `see-more ${ isLightColor ? "black-font" : "" }` }>MORE</span>
                     </Link>
                 )}
             </div>

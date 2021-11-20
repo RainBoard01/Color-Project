@@ -14,7 +14,7 @@ const generatePalette = starterPalette => {
         newPalette.colors[level] = [];
     }
 
-    for (let color of starterPalette.colors) {
+    for (let color of starterPalette.colors.data) {
         let scale = generateScale(color.color, 10).reverse();
 
         for (let i in scale) {

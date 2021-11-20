@@ -4,7 +4,7 @@ import "./Card.css";
 export const Card = props => {
     const { paletteName, emoji, colors, handleClick } = props;
 
-    const miniColorBoxes = colors.map(color => (
+    const miniColorBoxes = colors.data.map(color => (
         <div
             className="miniColorBox"
             style={{ backgroundColor: color.color }}
