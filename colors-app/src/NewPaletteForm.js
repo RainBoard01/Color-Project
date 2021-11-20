@@ -117,6 +117,7 @@ export const NewPaletteForm = props => {
       props.savePalette(newPalette);
       props.history.push("/");
     }
+    const deleteColor = name => (setColors(colors.filter(color => color.name !== name)));
 
     return (
     <Box sx={{ display: 'flex' }}>
@@ -197,7 +198,11 @@ export const NewPaletteForm = props => {
       <Main open={isDrawerOpen}>
         <DrawerHeader />
         { colors.map(color => 
-            <DraggableColorBox color={ color.color } name={ color.name } key={ color.name }/>
+            <DraggableColorBox
+              color={ color.color }
+              name={ color.name }
+              key={ color.name }
+              deleteColor={ () => deleteColor(color.name) }/>
         )}
         <Dialog open={ isDialogOpen } onClose={ handleDialogClose }>
           <ValidatorForm onSubmit={ submitPalette }>

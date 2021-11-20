@@ -42,6 +42,6 @@ export const DraggableColorBox = props =>
     <ColorBox color={props.color}>
         <Text>
             <Name>{ props.name }</Name>
-            <Delete />
+            <Delete onClick={ props.deleteColor }/>
         </Text>
     </ColorBox>;
