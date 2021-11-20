@@ -66,7 +66,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-export const NewPaletteForm = () => {
+export const NewPaletteForm = props => {
     const [open, setOpen] = useState(false);
     const [currentColor, setCurrentColor] = useState("");
     const [colors, setColors] = useState([]);
@@ -93,11 +93,21 @@ export const NewPaletteForm = () => {
       // setCurrentColor("");
     };
     const handleChange = e => setCurrentName(e.target.value);
+    const submitPalette = () => {
+      const newPalette = {
+        paletteName: "New Test Palette",
+        id: "new-test-palette",
+        emoji: "❤️",
+        colors: colors
+      };
+      props.savePalette(newPalette);
+      props.history.push("/");
+    }
 
     return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed" color='default' open={open}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -108,7 +118,10 @@ export const NewPaletteForm = () => {
           >
             <MenuIcon />
           </IconButton>
-            Persistent drawer
+            <Typography variant='h6' color='inherit' noWrap>
+              Persistent drawer
+            </Typography>
+            <Button variant='contained' color='primary' onClick={ submitPalette }>Save Palette</Button>
         </Toolbar>
       </AppBar>
       <Drawer
