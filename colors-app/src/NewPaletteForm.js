@@ -95,9 +95,9 @@ export const NewPaletteForm = props => {
     const handleChange = e => setCurrentName(e.target.value);
     const submitPalette = () => {
       const newPalette = {
-        paletteName: "New Test Palette",
-        id: "new-test-palette",
-        emoji: "❤️",
+        paletteName: "Diego Se La Come",
+        id: "diego-se-la-come",
+        emoji: "👌",
         colors: colors
       };
       props.savePalette(newPalette);
