@@ -18,6 +18,7 @@ function App() {
   const savePalette = async newPalette => {
     const res = await createPalette(newPalette);
     console.log(res);
+    getData(); 
   };
 
   useEffect(() => {
@@ -34,7 +35,7 @@ function App() {
 
   return (
     <Switch>
-      <Route exact path='/palette/new' render={ routeProps => <NewPaletteForm savePalette={ savePalette } { ...routeProps }/> }/>
+      <Route exact path='/palette/new' render={ routeProps => <NewPaletteForm savePalette={ savePalette } data={ data } { ...routeProps }/> }/>
       <Route exact path="/" render={routeProps => <PaletteList palettes={ data } { ...routeProps }/> }/>
       <Route exact path="/palette/:paletteId" render={
         routeProps => <Palette palette={ generatePalette(data[findPaletteById(routeProps.match.params.paletteId)]) } />
