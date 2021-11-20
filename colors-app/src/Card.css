@@ -1,7 +1,7 @@
 .card {
   background-color: white;
   border-radius: 5px;
-  padding: 0.5rem;
+  padding: 3%;
   position: relative;
   box-shadow: 0px 0px 4px 1.5px black;
 }
@@ -12,7 +12,7 @@
 
 .colors {
   background-color: #dae1e4;
-  height: 150px;
+  height: 14vw;
   width: 100%;
   border-radius: 5px;
   overflow: hidden;

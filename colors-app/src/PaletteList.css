@@ -1,17 +1,18 @@
 .paletteList {
-  background-color: blue;
-  height: 100vh;
-  display: flex;
-  align-items: flex-start;
+  background: #009fff;
+  background: -moz-linear-gradient(-45deg, #009fff 0%, #ec2f4b 100%);
+  background: -webkit-linear-gradient(-45deg, #009fff 0%,#ec2f4b 100%);
+  background: linear-gradient(135deg, #009fff 0%,#ec2f4b 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#009fff', endColorstr='#ec2f4b',GradientType=1 );  display: flex;
   justify-content: center;
+  min-height: 100vh;
 }
 
 .container {
-  width: 50%;
+  width: 80%;
   display: flex;
   align-items: flex-start;
   flex-direction: column;
-  flex-wrap: wrap;
 }
 
 .nav {
@@ -30,6 +31,7 @@
   box-sizing: border-box;
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, 30%);
-  grid-gap: 5%;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 100px;
 }

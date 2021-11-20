@@ -39,7 +39,7 @@ const createPalette = async newPalette => {
       }
     }
   `
-  return executeQuery(query).then(result => result);
+  return executeQuery(query).then(result => result.data);
 }
 
 const executeQuery = async query => {

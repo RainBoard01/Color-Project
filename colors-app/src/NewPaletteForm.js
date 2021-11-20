@@ -9,7 +9,12 @@ import {
     Divider,
     Stack,
     Button,
-    Typography
+    Typography,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle
 } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -67,22 +72,28 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 export const NewPaletteForm = props => {
-    const [open, setOpen] = useState(false);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isDialogOpen,setIsDialogOpen] = useState(false);
     const [currentColor, setCurrentColor] = useState("");
     const [colors, setColors] = useState([]);
     const [currentName, setCurrentName] = useState("");
+    const [currentPaletteName, setCurrentPaletteName] = useState("");
 
     useEffect(() => {
       ValidatorForm.addValidationRule("isColorNameUnique", value => colors.every(({ name }) => name.toLowerCase() !== currentName.toLowerCase()));
       ValidatorForm.addValidationRule("isColorUnique", value => colors.every(({ color }) => color !== currentColor));
+      ValidatorForm.addValidationRule("isPaletteNameUnique", value => props.data.every(({ paletteName }) => paletteName.toLowerCase() !== currentPaletteName.toLowerCase()));
       return function cleanup() { 
         ValidatorForm.removeValidationRule("isColorNameUnique");
         ValidatorForm.removeValidationRule("isColorUnique");
+        ValidatorForm.removeValidationRule("isPaletteNameUnique")
       }
     });
 
-    const handleDrawerOpen = () => setOpen(true);
-    const handleDrawerClose = () => setOpen(false);
+    const handleDrawerOpen = () => setIsDrawerOpen(true);
+    const handleDrawerClose = () => setIsDrawerOpen(false);
+    const handleDialogOpen = () => setIsDialogOpen(true);
+    const handleDialogClose = () => setIsDialogOpen(false);
     const updateColor = color => setCurrentColor(color.hex);
     const addColor = () => { 
       setColors([...colors, {
@@ -92,14 +103,17 @@ export const NewPaletteForm = props => {
       setCurrentName("");
       // setCurrentColor("");
     };
-    const handleChange = e => setCurrentName(e.target.value);
+    const handleNameChange = e => setCurrentName(e.target.value);
+    const handleDialogChange = e => setCurrentPaletteName(e.target.value);
     const submitPalette = () => {
       const newPalette = {
-        paletteName: "Diego Se La Come",
-        id: "diego-se-la-come",
-        emoji: "👌",
+        paletteName: currentPaletteName,
+        id: currentPaletteName.toLowerCase().replace(/ /g, "-"),
+        emoji: "🎈",
         colors: colors
       };
+      handleDialogClose();
+      setCurrentPaletteName("");
       props.savePalette(newPalette);
       props.history.push("/");
     }
@@ -107,21 +121,23 @@ export const NewPaletteForm = props => {
     return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" color='default' open={open}>
+      <AppBar position="fixed" color='default' open={isDrawerOpen}>
         <Toolbar>
           <IconButton
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
-            sx={{ mr: 2, ...(open && { display: 'none' }) }}
+            sx={{ mr: 2, ...(isDrawerOpen && { display: 'none' }) }}
           >
             <MenuIcon />
           </IconButton>
             <Typography variant='h6' color='inherit' noWrap>
               Persistent drawer
             </Typography>
-            <Button variant='contained' color='primary' onClick={ submitPalette }>Save Palette</Button>
+            <Button variant='contained' color='primary' onClick={ handleDialogOpen }>
+              Save Palette
+            </Button>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -135,7 +151,7 @@ export const NewPaletteForm = props => {
         }}
         variant="persistent"
         anchor="left"
-        open={open}
+        open={isDrawerOpen}
       >
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
@@ -164,7 +180,7 @@ export const NewPaletteForm = props => {
           <TextValidator
             label="Color Name"
             value={ currentName }
-            onChange={ handleChange }
+            onChange={ handleNameChange }
             validators={['required', 'isColorUnique','isColorNameUnique']}
             errorMessages={['This field is required','Color already used','Color name must be unique']}
           />
@@ -178,11 +194,47 @@ export const NewPaletteForm = props => {
           </Button>
         </ValidatorForm>
       </Drawer>
-      <Main open={open}>
+      <Main open={isDrawerOpen}>
         <DrawerHeader />
         { colors.map(color => 
             <DraggableColorBox color={ color.color } name={ color.name } key={ color.name }/>
         )}
+        <Dialog open={ isDialogOpen } onClose={ handleDialogClose }>
+          <ValidatorForm onSubmit={ submitPalette }>
+            <DialogTitle>Choose A Palette Name 🎨</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Please enter a name for your new beautiful palette. It needs to be unique!
+              </DialogContentText>
+              <TextValidator 
+                autoFocus
+                value={ currentPaletteName }
+                onChange={ handleDialogChange }
+                margin="dense"
+                label="Palette Name"
+                fullWidth
+                validators={['required',"isPaletteNameUnique"]}
+                errorMessages={['This field is required', "Palette name already used"]}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={ handleDialogClose }
+                variant="contained"
+                color="secondary"
+              >
+                CANCEL
+              </Button>
+              <Button
+                type='submit'
+                variant="contained"
+                color="primary"
+              >
+                SAVE
+              </Button>
+            </DialogActions>
+          </ValidatorForm>
+        </Dialog>
       </Main>
     </Box>
   );
