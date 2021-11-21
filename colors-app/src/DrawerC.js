@@ -2,7 +2,6 @@ import React from 'react';
 import { Drawer, IconButton, Stack, Typography, Button } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { styled } from '@mui/material/styles';
-import { jsx } from '@emotion/react';
 import { ChromePicker } from 'react-color';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
