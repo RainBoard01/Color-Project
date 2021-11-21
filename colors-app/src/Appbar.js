@@ -38,7 +38,7 @@ export const Appbar = props => {
 					<MenuIcon />
 				</IconButton>
 				<Typography variant='h6' color='inherit' noWrap>
-					Persistent drawer
+					Create A Palette
 				</Typography>
 				<Stack
 					direction='row'

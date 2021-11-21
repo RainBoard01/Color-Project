@@ -1,14 +1,8 @@
 import React from 'react';
-import {
-	Drawer,
-	IconButton,
-	Divider,
-	Stack,
-	Typography,
-	Button
-} from '@mui/material';
+import { Drawer, IconButton, Stack, Typography, Button } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { styled } from '@mui/material/styles';
+import { jsx } from '@emotion/react';
 import { ChromePicker } from 'react-color';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
@@ -22,6 +16,16 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 	...theme.mixins.toolbar,
 	justifyContent: 'flex-end'
 }));
+
+const Div = styled('div')({
+	display: 'flex',
+	flexDirection: 'column',
+	width: '90%',
+	height: '100%',
+	justifyContent: 'flex-start',
+	alignItems: 'center',
+	margin: '0 auto'
+});
 
 export const DrawerC = props => {
 	const {
@@ -56,50 +60,77 @@ export const DrawerC = props => {
 					<ChevronLeftIcon />
 				</IconButton>
 			</DrawerHeader>
-			<Divider />
-			<Typography variant='h4'>Design Your Palette</Typography>
-			<Stack
-				direction='row'
-				justifyContent='center'
-				alignItems='center'
-				spacing={2}
-			>
-				<Button variant='contained' color='secondary' onClick={() => setColors([])}>
-					CLEAR PALETTE
-				</Button>
-				<Button
-					variant='contained'
-					color='primary'
-					onClick={generateRandomColor}
-					disabled={isPaletteFull}
+			<Div>
+				<Typography variant='h5' style={{ marginBottom: '1rem' }}>
+					Design Your Palette
+				</Typography>
+				<Stack
+					direction='row'
+					justifyContent='center'
+					alignItems='center'
+					spacing={2}
+					style={{ marginBottom: '1rem' }}
 				>
-					{[isPaletteFull ? 'PALETTE FULL' : 'RANDOM COLOR']}
-				</Button>
-			</Stack>
-			<ChromePicker color={currentColor} onChangeComplete={updateColor} />
-			<ValidatorForm onSubmit={addColor}>
-				<TextValidator
-					label={isPaletteFull ? 'Palette Full' : 'Color Name'}
-					value={currentName}
-					onChange={handleNameChange}
-					validators={['required', 'isColorUnique', 'isColorNameUnique']}
-					errorMessages={[
-						'This field is required',
-						'Color already used',
-						'Color name must be unique'
-					]}
-					disabled={isPaletteFull}
-				/>
-				<Button
-					variant='contained'
-					color='primary'
-					style={{ background: currentColor }}
-					type='submit'
-					disabled={isPaletteFull}
+					<Button
+						variant='contained'
+						color='secondary'
+						onClick={() => setColors([])}
+					>
+						CLEAR PALETTE
+					</Button>
+					<Button
+						variant='contained'
+						color='primary'
+						onClick={generateRandomColor}
+						disabled={isPaletteFull}
+					>
+						{[isPaletteFull ? 'PALETTE FULL' : 'RANDOM COLOR']}
+					</Button>
+				</Stack>
+				<ChromePicker color={currentColor} onChangeComplete={updateColor} />
+				<ValidatorForm
+					onSubmit={addColor}
+					style={{
+						width: '100%',
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'center'
+					}}
 				>
-					{isPaletteFull ? 'PALETTE FULL' : 'ADD COLOR'}
-				</Button>
-			</ValidatorForm>
+					<TextValidator
+						style={{
+							width: '314.094px',
+							marginTop: '1rem'
+						}}
+						label={isPaletteFull ? 'Palette Full' : 'Color Name'}
+						value={currentName}
+						onChange={handleNameChange}
+						validators={['required', 'isColorUnique', 'isColorNameUnique']}
+						errorMessages={[
+							'This field is required',
+							'Color already used',
+							'Color name must be unique'
+						]}
+						disabled={isPaletteFull}
+						variant='filled'
+					/>
+					<Button
+						variant='contained'
+						color='primary'
+						style={{
+							background: currentColor,
+							width: '100%',
+							padding: '1rem',
+							marginTop: '1rem',
+							fontSize: '1.5rem'
+						}}
+						type='submit'
+						disabled={isPaletteFull}
+					>
+						{isPaletteFull ? 'PALETTE FULL' : 'ADD COLOR'}
+					</Button>
+				</ValidatorForm>
+			</Div>
 		</Drawer>
 	);
 };
