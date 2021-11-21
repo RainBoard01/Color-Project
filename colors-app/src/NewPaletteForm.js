@@ -81,9 +81,11 @@ export const NewPaletteForm = props => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isDialogOpen,setIsDialogOpen] = useState(false);
     const [currentColor, setCurrentColor] = useState("");
-    const [colors, setColors] = useState([]);
+    const [colors, setColors] = useState(props.data[Math.floor(Math.random()*props.data.length)].colors.data);
     const [currentName, setCurrentName] = useState("");
     const [currentPaletteName, setCurrentPaletteName] = useState("");
+    
+    const isPaletteFull = colors.length >= 20;
     
     useEffect(() => {
       ValidatorForm.addValidationRule("isColorNameUnique", value => colors.every(({ name }) => name.toLowerCase() !== currentName.toLowerCase()));
@@ -123,6 +125,11 @@ export const NewPaletteForm = props => {
       props.history.push("/");
     }
     
+    const generateRandomColor = () => {
+      const allColors = props.data.map(palette => palette.colors.data).flat();
+      setColors([...colors, allColors[Math.floor(Math.random()*allColors.length)]]);
+    }
+
     const deleteColor = name => setColors(colors.filter(color => color.name !== name));
     
     const onSortEnd = ({ oldIndex, newIndex }) => {
@@ -143,12 +150,17 @@ export const NewPaletteForm = props => {
           >
             <MenuIcon />
           </IconButton>
-            <Typography variant='h6' color='inherit' noWrap>
-              Persistent drawer
-            </Typography>
+          <Typography variant='h6' color='inherit' noWrap>
+            Persistent drawer
+          </Typography>
+          <Stack direction='row' justifyContent='center' alignItems='center' spacing={1} marginLeft='auto'>
+            <Button variant='contained' color='secondary' onClick={ () => props.history.push("/") }>
+              Go Back
+            </Button>
             <Button variant='contained' color='primary' onClick={ handleDialogOpen }>
               Save Palette
             </Button>
+          </Stack>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -174,11 +186,20 @@ export const NewPaletteForm = props => {
             Design Your Palette
         </Typography>
         <Stack direction="row" justifyContent="center" alignItems="center" spacing={2}>
-            <Button variant="contained" color="secondary">
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => setColors([])}
+            >
                 CLEAR PALETTE
             </Button>
-            <Button variant="contained" color="primary">
-                RANDOM COLOR
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={ generateRandomColor }
+              disabled={ isPaletteFull }
+            >
+                { isPaletteFull ? 'PALETTE FULL' : 'RANDOM COLOR' }
             </Button>
         </Stack>
         <ChromePicker 
@@ -189,19 +210,21 @@ export const NewPaletteForm = props => {
           onSubmit={ addColor }
         >
           <TextValidator
-            label="Color Name"
+            label={ isPaletteFull ? 'Palette Full' : 'Color Name' }
             value={ currentName }
             onChange={ handleNameChange }
             validators={['required', 'isColorUnique','isColorNameUnique']}
             errorMessages={['This field is required','Color already used','Color name must be unique']}
+            disabled={ isPaletteFull }
           />
           <Button
             variant="contained"
             color="primary"
             style={{background: currentColor}}
             type='submit'
+            disabled={ isPaletteFull }
           >
-            ADD COLOR
+            { isPaletteFull ? 'PALETTE FULL' : 'ADD COLOR' }
           </Button>
         </ValidatorForm>
       </Drawer>
