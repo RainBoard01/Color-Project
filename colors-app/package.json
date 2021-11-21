@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@dnd-kit/core": "^4.0.2",
-    "@dnd-kit/sortable": "^5.1.0",
-    "@dnd-kit/utilities": "^3.0.0",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
     "@mui/icons-material": "^5.1.0",
@@ -15,7 +12,6 @@
     "@testing-library/user-event": "^12.1.10",
     "array-move": "^4.0.0",
     "chroma-js": "^2.1.2",
-    "faunadb": "^4.4.1",
     "rc-slider": "^9.7.2",
     "react": "^17.0.2",
     "react-color": "^2.19.3",
