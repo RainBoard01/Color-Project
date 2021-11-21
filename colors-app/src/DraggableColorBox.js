@@ -1,16 +1,16 @@
 import React from 'react'
 import styled from '@emotion/styled'
 import DeleteIcon from '@mui/icons-material/Delete';
+import { SortableElement } from 'react-sortable-hoc';
 
 const ColorBox = styled.div`
     background-color: ${ props => props.color };
-    width: 20%;
+    cursor: pointer;
     height: 25%;
+    width: 20%;
     margin: 0 auto;
     display: inline-block;
     position: relative;
-    cursor: pointer;
-    /*margin-bottom: -4.2px;*/
 `;
 
 const Text = styled.div`
@@ -38,10 +38,11 @@ const Delete = styled(DeleteIcon)`
     }
 `;
 
-export const DraggableColorBox = props => 
+export const DraggableColorBox = SortableElement(props => 
     <ColorBox color={props.color}>
         <Text>
             <Name>{ props.name }</Name>
-            <Delete onClick={ props.deleteColor }/>
+            <button style={{ textDecoration: "none", border: 'none', background: 'none', padding: 0, margin: 0}} onClick={ props.deleteColor }>🗑️</button>
         </Text>
-    </ColorBox>;
+    </ColorBox>
+);

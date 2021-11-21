@@ -22,6 +22,8 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { ChromePicker } from 'react-color';
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator'
 import { DraggableColorBox } from './DraggableColorBox';
+import { arrayMoveImmutable } from 'array-move';
+import { sortableContainer } from 'react-sortable-hoc';
 
 const drawerWidth = 350;
 
@@ -71,6 +73,10 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
+const SortableContainer = sortableContainer(({ children }) => {
+  return <div style={{ height: '100%'}}>{ children }</div>;
+});
+
 export const NewPaletteForm = props => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isDialogOpen,setIsDialogOpen] = useState(false);
@@ -78,7 +84,7 @@ export const NewPaletteForm = props => {
     const [colors, setColors] = useState([]);
     const [currentName, setCurrentName] = useState("");
     const [currentPaletteName, setCurrentPaletteName] = useState("");
-
+    
     useEffect(() => {
       ValidatorForm.addValidationRule("isColorNameUnique", value => colors.every(({ name }) => name.toLowerCase() !== currentName.toLowerCase()));
       ValidatorForm.addValidationRule("isColorUnique", value => colors.every(({ color }) => color !== currentColor));
@@ -101,7 +107,6 @@ export const NewPaletteForm = props => {
         name: currentName
       }]);
       setCurrentName("");
-      // setCurrentColor("");
     };
     const handleNameChange = e => setCurrentName(e.target.value);
     const handleDialogChange = e => setCurrentPaletteName(e.target.value);
@@ -117,7 +122,12 @@ export const NewPaletteForm = props => {
       props.savePalette(newPalette);
       props.history.push("/");
     }
-    const deleteColor = name => (setColors(colors.filter(color => color.name !== name)));
+    
+    const deleteColor = name => setColors(colors.filter(color => color.name !== name));
+    
+    const onSortEnd = ({ oldIndex, newIndex }) => {
+      setColors(arrayMoveImmutable(colors, oldIndex, newIndex));
+    };
 
     return (
     <Box sx={{ display: 'flex' }}>
@@ -196,14 +206,18 @@ export const NewPaletteForm = props => {
         </ValidatorForm>
       </Drawer>
       <Main open={isDrawerOpen}>
-        <DrawerHeader />
-        { colors.map(color => 
+        <DrawerHeader /> 
+        <SortableContainer axis="xy" onSortEnd={ onSortEnd }>
+          {colors.map((color, index) => (
             <DraggableColorBox
               color={ color.color }
               name={ color.name }
               key={ color.name }
-              deleteColor={ () => deleteColor(color.name) }/>
-        )}
+              index={ index }
+              deleteColor={ () => deleteColor(color.name) }
+            />
+          ))}
+        </SortableContainer>
         <Dialog open={ isDialogOpen } onClose={ handleDialogClose }>
           <ValidatorForm onSubmit={ submitPalette }>
             <DialogTitle>Choose A Palette Name 🎨</DialogTitle>
