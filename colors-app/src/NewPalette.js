@@ -1,17 +1,10 @@
 import React from 'react';
 import { styled } from '@mui/material/styles';
-import {
-	Button,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogContentText,
-	DialogTitle
-} from '@mui/material';
 import { DraggableColorBox } from './DraggableColorBox';
+import { PaletteNameDialog } from './PaletteNameDialog';
+import { EmojiDialog } from './EmojiDialog';
 import { sortableContainer } from 'react-sortable-hoc';
 import { arrayMoveImmutable } from 'array-move';
-import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
 const drawerWidth = 350;
 
@@ -58,7 +51,10 @@ export const NewPalette = props => {
 		handleDialogClose,
 		submitPalette,
 		currentPaletteName,
-		handleDialogChange
+		handleDialogChange,
+		isEmojiOpen,
+		savePaletteName,
+		handleEmojiClose
 	} = props;
 
 	const onSortEnd = ({ oldIndex, newIndex }) => {
@@ -79,35 +75,18 @@ export const NewPalette = props => {
 					/>
 				))}
 			</SortableContainer>
-			<Dialog open={isDialogOpen} onClose={handleDialogClose}>
-				<ValidatorForm onSubmit={submitPalette}>
-					<DialogTitle>Choose A Palette Name 🎨</DialogTitle>
-					<DialogContent>
-						<DialogContentText>
-							Please enter a name for your new beautiful palette. It needs to be
-							unique!
-						</DialogContentText>
-						<TextValidator
-							autoFocus
-							value={currentPaletteName}
-							onChange={handleDialogChange}
-							margin='dense'
-							label='Palette Name'
-							fullWidth
-							validators={['required', 'isPaletteNameUnique']}
-							errorMessages={['This field is required', 'Palette name already used']}
-						/>
-					</DialogContent>
-					<DialogActions>
-						<Button onClick={handleDialogClose} variant='contained' color='secondary'>
-							CANCEL
-						</Button>
-						<Button type='submit' variant='contained' color='primary'>
-							SAVE
-						</Button>
-					</DialogActions>
-				</ValidatorForm>
-			</Dialog>
+			<PaletteNameDialog
+				isDialogOpen={isDialogOpen}
+				handleDialogChange={handleDialogChange}
+				savePaletteName={savePaletteName}
+				currentPaletteName={currentPaletteName}
+				handleDialogClose={handleDialogClose}
+			/>
+			<EmojiDialog
+				submitPalette={submitPalette}
+				isEmojiOpen={isEmojiOpen}
+				handleEmojiClose={handleEmojiClose}
+			/>
 		</Main>
 	);
 };

@@ -10,6 +10,7 @@ export const NewPaletteForm = props => {
 	/*----------------------useState----------------------*/
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
+	const [isEmojiOpen, setIsEmojiOpen] = useState(false);
 	const [currentColor, setCurrentColor] = useState('');
 	const [colors, setColors] = useState(
 		props.data[Math.floor(Math.random() * props.data.length)].colors.data
@@ -43,6 +44,8 @@ export const NewPaletteForm = props => {
 	const handleDrawerClose = () => setIsDrawerOpen(false);
 	const handleDialogOpen = () => setIsDialogOpen(true);
 	const handleDialogClose = () => setIsDialogOpen(false);
+	const handleEmojiOpen = () => setIsEmojiOpen(true);
+	const handleEmojiClose = () => setIsEmojiOpen(false);
 	const handleNameChange = e => setCurrentName(e.target.value);
 	const handleDialogChange = e => setCurrentPaletteName(e.target.value);
 	const updateColor = color => setCurrentColor(color.hex);
@@ -65,17 +68,21 @@ export const NewPaletteForm = props => {
 			allColors[Math.floor(Math.random() * allColors.length)]
 		]);
 	};
-	const submitPalette = () => {
+	const submitPalette = emoji => {
 		const newPalette = {
 			paletteName: currentPaletteName,
 			id: currentPaletteName.toLowerCase().replace(/ /g, '-'),
-			emoji: '🎈',
+			emoji: emoji.native,
 			colors: colors
 		};
-		handleDialogClose();
+		handleEmojiClose();
 		setCurrentPaletteName('');
 		props.savePalette(newPalette);
 		props.history.push('/');
+	};
+	const savePaletteName = () => {
+		handleDialogClose();
+		handleEmojiOpen();
 	};
 
 	/*----------------------misc----------------------*/
@@ -112,6 +119,9 @@ export const NewPaletteForm = props => {
 				submitPalette={submitPalette}
 				currentPaletteName={currentPaletteName}
 				handleDialogChange={handleDialogChange}
+				isEmojiOpen={isEmojiOpen}
+				savePaletteName={savePaletteName}
+				handleEmojiClose={handleEmojiClose}
 			/>
 		</Box>
 	);
