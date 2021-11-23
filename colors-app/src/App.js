@@ -8,22 +8,21 @@ import { generatePalette } from './colorHelpers';
 import { getPalettes, createPalette } from './api';
 
 function App() {
-	const [data, setData] = useState([]);
+	const savedPalettes = JSON.parse(window.localStorage.getItem('palettes'));
+	const [data, setData] = useState(savedPalettes || []);
 
 	const getData = async () => {
 		const res = await getPalettes();
+		window.localStorage.setItem('palettes', JSON.stringify(res));
 		setData(res);
 	};
 
 	const savePalette = async newPalette => {
-		const res = await createPalette(newPalette);
-		console.log(res);
+		await createPalette(newPalette);
 		getData();
 	};
 
-	useEffect(() => {
-		getData();
-	}, []);
+	useEffect(() => getData(), []);
 
 	function findPaletteById(id) {
 		for (let i = 0; i < data.length; i++) {
