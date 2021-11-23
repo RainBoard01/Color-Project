@@ -5,7 +5,7 @@ import { NewPaletteForm } from './NewPaletteForm';
 import { SingleColorPalette } from './SingleColorPalette';
 import { Route, Switch } from 'react-router-dom';
 import { generatePalette } from './colorHelpers';
-import { getPalettes, createPalette } from './api';
+import { getPalettes, createPalette, deletePalette, deleteColors } from './api';
 
 function App() {
 	const savedPalettes = JSON.parse(window.localStorage.getItem('palettes'));
@@ -22,7 +22,14 @@ function App() {
 		getData();
 	};
 
-	useEffect(() => getData(), []);
+	const deletePaletteWithColors = async (paletteId, colors) => {
+		const colorsId = colors.map(color => color._id);
+		await deletePalette(paletteId);
+		await deleteColors(colorsId);
+		getData();
+	};
+
+	// useEffect(() => getData(), []);
 
 	function findPaletteById(id) {
 		for (let i = 0; i < data.length; i++) {
@@ -44,7 +51,13 @@ function App() {
 			<Route
 				exact
 				path='/'
-				render={routeProps => <PaletteList palettes={data} {...routeProps} />}
+				render={routeProps => (
+					<PaletteList
+						palettes={data}
+						deletePaletteWithColors={deletePaletteWithColors}
+						{...routeProps}
+					/>
+				)}
 			/>
 			<Route
 				exact

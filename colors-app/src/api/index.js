@@ -5,11 +5,13 @@ const getPalettes = async () => {
     {
         allPalettes {
           data {
+            _id
             paletteName
             id
             emoji
             colors {
               data {
+                _id
                 name
                 color
               }
@@ -45,6 +47,29 @@ const createPalette = async newPalette => {
 	return executeQuery(query).then(result => result.data);
 };
 
+const deletePalette = async id => {
+	const query = `
+    mutation {
+      deletePalette(id: "${id}"){
+        id
+      }
+    }
+  `;
+	return executeQuery(query).then(result => result.data);
+};
+
+const deleteColors = async colorsIds => {
+	const deleteQueries = colorsIds.map(
+		(id, index) => `id${index + 1}: deleteColor(id: "${id}"){name}`
+	);
+	const query = `
+    mutation deleteMultiple {
+      ${deleteQueries}
+    }
+  `;
+	return executeQuery(query.replace(',', '')).then(result => result.data);
+};
+
 const executeQuery = async query => {
 	return fetch('https://graphql.us.fauna.com/graphql', {
 		method: 'POST',
@@ -57,4 +82,4 @@ const executeQuery = async query => {
 	}).then(el => el.json());
 };
 
-export { getPalettes, createPalette };
+export { getPalettes, createPalette, deletePalette, deleteColors };
