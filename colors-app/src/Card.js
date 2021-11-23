@@ -16,16 +16,15 @@ export const Card = props => {
 
 	return (
 		<div className='card' onClick={handleClick}>
-			<div className='delete'>
-				<DeleteIcon
-					className='deleteIcon'
-					style={{ transition: 'all 0.3s ease-in-out' }}
-				/>
-			</div>
+			<DeleteIcon
+				className='deleteIcon'
+				style={{ transition: 'all 0.3s ease-in-out' }}
+				onClick={deletePaletteWithColors}
+			/>
 			<div className='colors'>{miniColorBoxes}</div>
 			<div className='title'>
 				{paletteName}
-				<span onClick={deletePaletteWithColors}>{emoji}</span>
+				<span>{emoji}</span>
 			</div>
 		</div>
 	);

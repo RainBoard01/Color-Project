@@ -22,14 +22,15 @@ function App() {
 		getData();
 	};
 
-	const deletePaletteWithColors = async (paletteId, colors) => {
+	const deletePaletteWithColors = async (event, paletteId, colors) => {
 		const colorsId = colors.map(color => color._id);
+		event.stopPropagation();
 		await deletePalette(paletteId);
 		await deleteColors(colorsId);
 		getData();
 	};
 
-	// useEffect(() => getData(), []);
+	useEffect(() => getData(), []);
 
 	function findPaletteById(id) {
 		for (let i = 0; i < data.length; i++) {

@@ -11,8 +11,8 @@ export const PaletteList = props => {
 			handleClick={() => goToPalette(palette.id)}
 			{...palette}
 			key={palette.id}
-			deletePaletteWithColors={() =>
-				deletePaletteWithColors(palette._id, palette.colors.data)
+			deletePaletteWithColors={event =>
+				deletePaletteWithColors(event, palette._id, palette.colors.data)
 			}
 		/>
 	));
