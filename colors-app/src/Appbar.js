@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Toolbar, Typography, Stack, Button, IconButton } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import { styled } from '@mui/material/styles';
-import MenuIcon from '@mui/icons-material/Menu';
+import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 
 const drawerWidth = 350;
 
@@ -35,7 +35,7 @@ export const Appbar = props => {
 					edge='start'
 					sx={{ mr: 2, ...(props.isDrawerOpen && { display: 'none' }) }}
 				>
-					<MenuIcon />
+					<AddToPhotosIcon />
 				</IconButton>
 				<Typography variant='h6' color='inherit' noWrap>
 					Create A Palette
