@@ -13,7 +13,7 @@ export const NewPaletteForm = props => {
 	const [isEmojiOpen, setIsEmojiOpen] = useState(false);
 	const [currentColor, setCurrentColor] = useState('');
 	const [colors, setColors] = useState(
-		props.data[Math.floor(Math.random() * props.data.length)].colors.data
+		props.data[Math.floor(Math.random() * props.data.length)].colors
 	);
 	const [currentName, setCurrentName] = useState('');
 	const [currentPaletteName, setCurrentPaletteName] = useState('');

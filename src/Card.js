@@ -3,10 +3,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import './Card.css';
 
 export const Card = props => {
-	const { paletteName, emoji, colors, handleClick, deletePaletteWithColors } =
-		props;
+	const { paletteName, emoji, colors, handleClick, deletePalette } = props;
 
-	const miniColorBoxes = colors.data.map(color => (
+	const miniColorBoxes = colors.map(color => (
 		<div
 			className='miniColorBox'
 			style={{ backgroundColor: color.color }}
@@ -19,7 +18,7 @@ export const Card = props => {
 			<DeleteIcon
 				className='deleteIcon'
 				style={{ transition: 'all 0.3s ease-in-out' }}
-				onClick={deletePaletteWithColors}
+				onClick={deletePalette}
 			/>
 			<div className='colors'>{miniColorBoxes}</div>
 			<div className='title'>

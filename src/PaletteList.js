@@ -4,16 +4,14 @@ import './PaletteList.css';
 import { Card } from './Card';
 
 export const PaletteList = props => {
-	const { palettes, deletePaletteWithColors } = props;
+	const { palettes, deletePalette } = props;
 
 	const cards = palettes.map(palette => (
 		<Card
 			handleClick={() => goToPalette(palette.id)}
 			{...palette}
 			key={palette.id}
-			deletePaletteWithColors={event =>
-				deletePaletteWithColors(event, palette._id, palette.colors.data)
-			}
+			deletePalette={event => deletePalette(event, palette._id)}
 		/>
 	));
 

@@ -5,28 +5,26 @@ import { NewPaletteForm } from './NewPaletteForm';
 import { SingleColorPalette } from './SingleColorPalette';
 import { Route, Switch } from 'react-router-dom';
 import { generatePalette } from './colorHelpers';
-import { getPalettes, createPalette, deletePalette, deleteColors } from './api';
+import { getPalettes, createPalette, deletePalette } from './api';
 
 function App() {
 	const savedPalettes = JSON.parse(window.localStorage.getItem('palettes'));
 	const [data, setData] = useState(savedPalettes || []);
 
-	const getData = async () => {
-		const res = await getPalettes();
-		window.localStorage.setItem('palettes', JSON.stringify(res));
-		setData(res);
-	};
+	const getData = async () =>
+		await getPalettes().then(result => {
+			window.localStorage.setItem('palettes', JSON.stringify(result));
+			setData(result);
+		});
 
-	const savePalette = async newPalette => {
+	const handleSavePalette = async newPalette => {
 		await createPalette(newPalette);
 		getData();
 	};
 
-	const deletePaletteWithColors = async (event, paletteId, colors) => {
-		const colorsId = colors.map(color => color._id);
+	const handleDeletePalette = async (event, paletteId) => {
 		event.stopPropagation();
 		await deletePalette(paletteId);
-		await deleteColors(colorsId);
 		getData();
 	};
 
@@ -46,7 +44,11 @@ function App() {
 				exact
 				path='/palette/new'
 				render={routeProps => (
-					<NewPaletteForm savePalette={savePalette} data={data} {...routeProps} />
+					<NewPaletteForm
+						savePalette={handleSavePalette}
+						data={data}
+						{...routeProps}
+					/>
 				)}
 			/>
 			<Route
@@ -55,7 +57,7 @@ function App() {
 				render={routeProps => (
 					<PaletteList
 						palettes={data}
-						deletePaletteWithColors={deletePaletteWithColors}
+						deletePalette={handleDeletePalette}
 						{...routeProps}
 					/>
 				)}

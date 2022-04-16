@@ -1,50 +1,45 @@
-let secret = process.env.REACT_APP_FAUNADB_SECRET_KEY;
+const apiHostname = process.env.API_HOSTNAME;
+const apiPort = process.env.API_PORT;
 
 const getPalettes = async () => {
 	const query = `
     {
-        allPalettes {
-          data {
-            _id
-            paletteName
-            id
-            emoji
-            colors {
-              data {
-                _id
-                name
-                color
-              }
-            }
-          }
+      allPalettes {
+        _id
+        paletteName
+        id
+        emoji
+        colors {
+          _id
+          name
+          color
         }
+      }
     }`;
-	return executeQuery(query).then(result => result.data.allPalettes.data);
+	return await executeQuery(query).then(result => result.data.allPalettes);
 };
 
 const createPalette = async newPalette => {
 	const query = `
     mutation CreatePalette {
-      createPalette(
-        data: {
-          paletteName: "${newPalette.paletteName}"
-          id: "${newPalette.id}"
-          emoji: "${newPalette.emoji}"
-          colors: {
-            create: [
-              ${newPalette.colors.map(
-															color =>
-																'{ name: "' + color.name + '", color: "' + color.color + '" }'
-														)}
-            ]
-          }
+      createPalette(data: {
+        paletteName: "${newPalette.paletteName}"
+        id: "${newPalette.id}"
+        emoji: "${newPalette.emoji}"
+        colors: {
+          create: [
+            ${newPalette.colors.map(
+													color =>
+														'{ name: "' + color.name + '", color: "' + color.color + '" }'
+												)}
+          ]
         }
-      ) {
+      }) {
         _id
       }
     }
   `;
-	return executeQuery(query).then(result => result.data);
+	return await executeQuery(query).then(result => result.data.createPalette);
 };
 
 const deletePalette = async id => {
@@ -55,31 +50,18 @@ const deletePalette = async id => {
       }
     }
   `;
-	return executeQuery(query).then(result => result.data);
-};
-
-const deleteColors = async colorsIds => {
-	const deleteQueries = colorsIds.map(
-		(id, index) => `id${index + 1}: deleteColor(id: "${id}"){name}`
-	);
-	const query = `
-    mutation deleteMultiple {
-      ${deleteQueries}
-    }
-  `;
-	return executeQuery(query.replace(',', '')).then(result => result.data);
+	return await executeQuery(query).then(result => result.data.deletePalette);
 };
 
 const executeQuery = async query => {
-	return fetch('https://graphql.us.fauna.com/graphql', {
+	return await fetch(`${apiHostname}:${apiPort}/graphql`, {
 		method: 'POST',
 		headers: {
-			Authorization: 'Bearer ' + secret,
 			'Content-Type': 'application/json',
 			Accept: 'application/json'
 		},
 		body: JSON.stringify({ query: query })
-	}).then(el => el.json());
+	}).then(res => res.json());
 };
 
-export { getPalettes, createPalette, deletePalette, deleteColors };
+export { getPalettes, createPalette, deletePalette };
