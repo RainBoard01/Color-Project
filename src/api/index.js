@@ -1,8 +1,8 @@
-import dotenv from 'dotenv';
-dotenv.config();
+// import dotenv from 'dotenv';
+// dotenv.config();
 
-const apiHostname = process.env.API_HOSTNAME;
-const apiPort = process.env.API_PORT;
+const apiHostname = process.env.REACT_APP_API_HOSTNAME;
+const apiPort = process.env.REACT_APP_API_PORT;
 
 const getPalettes = async () => {
 	const query = `
