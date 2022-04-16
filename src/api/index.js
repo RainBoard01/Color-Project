@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 const apiHostname = process.env.API_HOSTNAME;
 const apiPort = process.env.API_PORT;
 
