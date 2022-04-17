@@ -5,7 +5,12 @@ import { NewPaletteForm } from './NewPaletteForm';
 import { SingleColorPalette } from './SingleColorPalette';
 import { Route, Switch } from 'react-router-dom';
 import { generatePalette } from './colorHelpers';
-import { getPalettes, createPalette, deletePalette } from './api';
+import {
+	getPalettes,
+	createPalette,
+	deletePalette,
+	resetPalettes
+} from './api';
 
 function App() {
 	const savedPalettes = JSON.parse(window.localStorage.getItem('palettes'));
@@ -25,7 +30,10 @@ function App() {
 	const handleDeletePalette = async (event, paletteId) => {
 		event.stopPropagation();
 		await deletePalette(paletteId);
-		getData();
+		await getData().then(async () => {
+			if (JSON.parse(window.localStorage.getItem('palettes')).length === 0)
+				await resetPalettes().then(async () => await getData());
+		});
 	};
 
 	useEffect(() => getData(), []);
