@@ -5,18 +5,45 @@ import { ValidatorForm } from 'react-material-ui-form-validator';
 import { Appbar } from './Appbar';
 import { DrawerC } from './DrawerC';
 import { NewPalette } from './NewPalette';
+import { useCreatePalette } from './hooks/useCreatePalette';
+import { useGetColors } from './hooks/useGetColors';
+import { useQueryClient } from 'react-query';
+
+const generateRandomArray = array => {
+	const newArray = [];
+	const arrayRndNumbers = [];
+	for (let i = 0; i < 20; i++) {
+		let rndNumber = Math.floor(Math.random() * array.length);
+		if (arrayRndNumbers.includes(rndNumber)) {
+			i -= 1;
+			continue;
+		}
+		arrayRndNumbers.push(rndNumber);
+		newArray.push(array[rndNumber]);
+	}
+	return newArray;
+};
 
 export const NewPaletteForm = props => {
+	const createPalette = useCreatePalette();
+	const palettesName = useQueryClient()
+		.getQueryData('palettes')
+		.data.allPalettes.map(palette => palette.paletteName);
+
+	const { data, isSuccess } = useGetColors('colors');
+	const allColors = isSuccess ? data.data.allColors : [];
 	/*----------------------useState----------------------*/
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [isEmojiOpen, setIsEmojiOpen] = useState(false);
 	const [currentColor, setCurrentColor] = useState('');
-	const [colors, setColors] = useState(
-		props.data[Math.floor(Math.random() * props.data.length)].colors
-	);
+	const [colors, setColors] = useState([]);
 	const [currentName, setCurrentName] = useState('');
 	const [currentPaletteName, setCurrentPaletteName] = useState('');
+
+	useEffect(() => {
+		if (data) setColors(generateRandomArray(data.data.allColors));
+	}, [data]);
 
 	/*----------------------validation----------------------*/
 	useEffect(() => {
@@ -26,19 +53,20 @@ export const NewPaletteForm = props => {
 		ValidatorForm.addValidationRule('isColorUnique', value =>
 			colors.every(({ color }) => color !== currentColor)
 		);
-		ValidatorForm.addValidationRule('isPaletteNameUnique', value =>
-			props.data.every(
-				({ paletteName }) =>
-					paletteName.toLowerCase() !== currentPaletteName.toLowerCase()
-			)
+		ValidatorForm.addValidationRule(
+			'isPaletteNameUnique',
+			value =>
+				!palettesName.every(
+					paletteName =>
+						paletteName.toLowerCase() !== currentPaletteName.toLowerCase()
+				)
 		);
 		return function cleanup() {
 			ValidatorForm.removeValidationRule('isColorNameUnique');
 			ValidatorForm.removeValidationRule('isColorUnique');
 			ValidatorForm.removeValidationRule('isPaletteNameUnique');
 		};
-	});
-
+	}, [colors, currentName, currentColor, currentPaletteName, palettesName]);
 	/*----------------------handlers----------------------*/
 	const handleDrawerOpen = () => setIsDrawerOpen(true);
 	const handleDrawerClose = () => setIsDrawerOpen(false);
@@ -62,11 +90,12 @@ export const NewPaletteForm = props => {
 	const deleteColor = name =>
 		setColors(colors.filter(color => color.name !== name));
 	const generateRandomColor = () => {
-		const allColors = props.data.map(palette => palette.colors.data).flat();
-		setColors([
-			...colors,
-			allColors[Math.floor(Math.random() * allColors.length)]
-		]);
+		let colorsName = colors.map(color => color.name);
+		let rndColor = {};
+		do {
+			rndColor = allColors[Math.floor(Math.random() * allColors.length)];
+		} while (colorsName.includes(rndColor.name));
+		setColors([...colors, rndColor]);
 	};
 	const submitPalette = emoji => {
 		const newPalette = {
@@ -77,7 +106,7 @@ export const NewPaletteForm = props => {
 		};
 		handleEmojiClose();
 		setCurrentPaletteName('');
-		props.savePalette(newPalette);
+		createPalette.mutate(newPalette);
 		props.history.push('/');
 	};
 	const savePaletteName = () => {
@@ -87,7 +116,6 @@ export const NewPaletteForm = props => {
 
 	/*----------------------misc----------------------*/
 	const isPaletteFull = colors.length >= 20;
-
 	/*----------------------component----------------------*/
 	return (
 		<Box sx={{ display: 'flex' }}>

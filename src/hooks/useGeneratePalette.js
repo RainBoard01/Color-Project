@@ -1,8 +1,24 @@
 import chroma from 'chroma-js';
+import { useGetColors } from './useGetColors';
 
 const levels = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
 
-const generatePalette = starterPalette => {
+const generateScale = (hexColor, numberOfColors) => {
+	return chroma.scale(getRange(hexColor)).mode('lab').colors(numberOfColors);
+};
+
+const getRange = hexColor => {
+	const end = '#fff';
+	return [chroma(hexColor).darken(1.4).hex(), hexColor, end];
+};
+
+export const useGeneratePalette = starterPalette => {
+	const { data, isLoading } = useGetColors(
+		['colors', starterPalette.id],
+		starterPalette.id
+	);
+	const colors = !isLoading ? data.data.allColors : [];
+
 	let newPalette = {
 		paletteName: starterPalette.paletteName,
 		id: starterPalette.id,
@@ -14,7 +30,7 @@ const generatePalette = starterPalette => {
 		newPalette.colors[level] = [];
 	}
 
-	for (let color of starterPalette.colors) {
+	for (let color of colors) {
 		let scale = generateScale(color.color, 10).reverse();
 
 		for (let i in scale) {
@@ -30,14 +46,3 @@ const generatePalette = starterPalette => {
 
 	return newPalette;
 };
-
-const generateScale = (hexColor, numberOfColors) => {
-	return chroma.scale(getRange(hexColor)).mode('lab').colors(numberOfColors);
-};
-
-const getRange = hexColor => {
-	const end = '#fff';
-	return [chroma(hexColor).darken(1.4).hex(), hexColor, end];
-};
-
-export { generatePalette };

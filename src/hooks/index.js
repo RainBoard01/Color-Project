@@ -3,19 +3,20 @@ const apiPort = process.env.REACT_APP_API_PORT;
 
 const getPalettes = async () => {
 	const query = `
-    {
-      allPalettes {
-        _id
-        paletteName
-        id
-        emoji
-        colors {
-          _id
-          name
-          color
-        }
-      }
-    }`;
+		{
+			allPalettes {
+				_id
+				paletteName
+				id
+				emoji
+				colors {
+					_id
+					name
+					color
+				}
+			}
+		}
+	`;
 	return await executeQuery(query).then(result => result.data.allPalettes);
 };
 
