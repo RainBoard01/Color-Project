@@ -3,49 +3,51 @@ import { Link } from 'react-router-dom';
 import { ColorBox } from './ColorBox';
 import { Navbar } from './Navbar';
 import { PaletteFooter } from './PaletteFooter';
+import { useGeneratePalette } from './hooks/useGeneratePalette';
 
-export const SingleColorPalette = props => { 
-    const { palette, colorId } = props;
-    const [format, setFormat] = useState("hex");
+export const SingleColorPalette = props => {
+	const { paletteId, colorId } = props;
+	const [format, setFormat] = useState('hex');
 
-    const gatherShades = (palette, colorToFilterBy) => {
-        let shades = [];
-        let allColors = palette.colors;
+	const generatedPalette = useGeneratePalette(paletteId);
 
-        for (let key in allColors) {
-            shades = shades.concat(
-                allColors[key].filter(color => color.id === colorToFilterBy)
-            );
-        }
+	const gatherShades = (palette, colorToFilterBy) => {
+		let shades = [];
+		let allColors = palette.colors;
 
-        return shades.slice(1);
-    };
+		for (let key in allColors) {
+			shades = shades.concat(
+				allColors[key].filter(color => color.id === colorToFilterBy)
+			);
+		}
 
-    const shades = gatherShades(palette, colorId);
+		return shades.slice(1);
+	};
 
-    const colorBoxes = shades.map(color => (
-        <ColorBox
-            background={ color[format] }
-            name={ color.name }
-            key={ color.name.replace(/ /g,"-") }
-            showLink={ false }
-        />
-    ))
+	const shades = gatherShades(generatedPalette, colorId);
 
-    return (
-        <div className="Single-Color-Palette Palette">
-            <Navbar
-                showSlider={false}
-                format={ format }
-                setFormat={ setFormat }
-            />
-            <div className="Palette-colors">
-                { colorBoxes }
-                <div className="go-back ColorBox">
-                    <Link to={ `/palette/${ palette.id }` } className="back-button">GO BACK</Link>
-                </div>
-            </div>
-            <PaletteFooter paletteName={ palette.paletteName } emoji={ palette.emoji }/>
-        </div>
-    )
-}
+	return (
+		<div className='Single-Color-Palette Palette'>
+			<Navbar showSlider={false} format={format} setFormat={setFormat} />
+			<div className='Palette-colors'>
+				{shades.map(color => (
+					<ColorBox
+						background={color[format]}
+						name={color.name}
+						key={color.name.replace(/ /g, '-')}
+						showLink={false}
+					/>
+				))}
+				<div className='go-back ColorBox'>
+					<Link to={`/palette/${generatedPalette.id}`} className='back-button'>
+						GO BACK
+					</Link>
+				</div>
+			</div>
+			<PaletteFooter
+				paletteName={generatedPalette.paletteName}
+				emoji={generatedPalette.emoji}
+			/>
+		</div>
+	);
+};

@@ -95,6 +95,7 @@ export const DrawerC = props => {
 						flexDirection: 'column',
 						alignItems: 'center'
 					}}
+					instantValidate={true}
 				>
 					<TextValidator
 						style={{
@@ -104,11 +105,11 @@ export const DrawerC = props => {
 						label={isPaletteFull ? 'Palette Full' : 'Color Name'}
 						value={currentName}
 						onChange={handleNameChange}
-						validators={['required', 'isColorUnique', 'isColorNameUnique']}
+						validators={['required', 'isColorNameUnique', 'isColorUnique']}
 						errorMessages={[
 							'This field is required',
-							'Color already used',
-							'Color name must be unique'
+							'Color name must be unique',
+							'Color value already used'
 						]}
 						disabled={isPaletteFull}
 						variant='filled'

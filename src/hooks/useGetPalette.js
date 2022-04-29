@@ -1,17 +1,16 @@
 import { useQuery } from 'react-query';
 import { executeQuery } from './executeQuery';
 
-export const useGetPalettes = (key, config) => {
+export const useGetPalette = (key, id, config) => {
 	const query = `
 		{
-			allPalettes {
-				_id
-				paletteName
-				id
-				emoji
-			}
+    		findPaletteByID(id: "${id}") {
+      		_id
+        		id
+        		paletteName
+        		emoji
+    		}
 		}
 	`;
-
 	return useQuery(key, () => executeQuery(query), config);
 };

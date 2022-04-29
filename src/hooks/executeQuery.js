@@ -9,4 +9,6 @@ export const executeQuery = async query =>
 			Accept: 'application/json'
 		},
 		body: JSON.stringify({ query: query })
-	}).then(res => res.json());
+	})
+		.then(res => res.json())
+		.catch(err => console.log(err));

@@ -1,5 +1,6 @@
 import chroma from 'chroma-js';
 import { useGetColors } from './useGetColors';
+import { useGetPalette } from './useGetPalette';
 
 const levels = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
 
@@ -12,20 +13,22 @@ const getRange = hexColor => {
 	return [chroma(hexColor).darken(1.4).hex(), hexColor, end];
 };
 
-export const useGeneratePalette = starterPalette => {
-	const { data, isLoading } = useGetColors(
-		['colors', starterPalette.id],
-		starterPalette.id
-	);
-	const colors = !isLoading ? data.data.allColors : [];
+export const useGeneratePalette = paletteId => {
+	const usePalette = useGetPalette(['palette', paletteId], paletteId);
 
+	const starterPalette = usePalette.data
+		? usePalette.data.data.findPaletteByID
+		: {};
+
+	const useColors = useGetColors(['colors', paletteId], paletteId);
+	const colors =
+		useColors.data && starterPalette ? useColors.data.data.allColors : [];
 	let newPalette = {
 		paletteName: starterPalette.paletteName,
 		id: starterPalette.id,
 		emoji: starterPalette.emoji,
 		colors: {}
 	};
-
 	for (let level of levels) {
 		newPalette.colors[level] = [];
 	}

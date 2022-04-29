@@ -1,8 +1,10 @@
 import { useMutation, useQueryClient } from 'react-query';
 import { executeQuery } from './executeQuery';
+import { useResetPaletteList } from './useResetPaletteList';
 
 export const useDeletePalette = () => {
 	const queryClient = useQueryClient();
+	const { mutate } = useResetPaletteList();
 	const query = id => `
 		mutation {
 			deletePalette(id: "${id}"){
@@ -13,7 +15,6 @@ export const useDeletePalette = () => {
 	return useMutation(_id => executeQuery(query(_id)), {
 		onMutate: async _id => {
 			await queryClient.cancelQueries('palettes');
-
 			const previousValue = queryClient.getQueryData('palettes');
 
 			queryClient.setQueryData('palettes', old => ({
@@ -23,6 +24,10 @@ export const useDeletePalette = () => {
 					]
 				}
 			}));
+
+			if (queryClient.getQueryData('palettes').data.allPalettes.length === 0) {
+				mutate();
+			}
 
 			return previousValue;
 		},

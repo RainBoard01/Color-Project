@@ -1,60 +1,8 @@
-const apiHostname = process.env.REACT_APP_API_HOSTNAME;
-const apiPort = process.env.REACT_APP_API_PORT;
+import { useMutation, useQueryClient } from 'react-query';
+import { executeQuery } from './executeQuery';
 
-const getPalettes = async () => {
-	const query = `
-		{
-			allPalettes {
-				_id
-				paletteName
-				id
-				emoji
-				colors {
-					_id
-					name
-					color
-				}
-			}
-		}
-	`;
-	return await executeQuery(query).then(result => result.data.allPalettes);
-};
-
-const createPalette = async newPalette => {
-	const query = `
-    mutation CreatePalette {
-      createPalette(data: {
-        paletteName: "${newPalette.paletteName}"
-        id: "${newPalette.id}"
-        emoji: "${newPalette.emoji}"
-        colors: {
-          create: [
-            ${newPalette.colors.map(
-													color =>
-														'{ name: "' + color.name + '", color: "' + color.color + '" }'
-												)}
-          ]
-        }
-      }) {
-        _id
-      }
-    }
-  `;
-	return await executeQuery(query).then(result => result.data.createPalette);
-};
-
-const deletePalette = async id => {
-	const query = `
-    mutation {
-      deletePalette(id: "${id}"){
-        id
-      }
-    }
-  `;
-	return await executeQuery(query).then(result => result.data.deletePalette);
-};
-
-const resetPalettes = async () => {
+export const useResetPaletteList = () => {
+	const queryClient = useQueryClient();
 	const query = `
     mutation createMultiple {
       palette1: createPalette(
@@ -355,18 +303,14 @@ const resetPalettes = async () => {
       }
     }
   `;
-	return await executeQuery(query).then(result => result.data.createMultiple);
-};
-
-const executeQuery = async query => {
-	return await fetch(`${apiHostname}:${apiPort}/graphql`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Accept: 'application/json'
+	return useMutation(() => executeQuery(query), {
+		onError: (err, variables, previousValue) => {
+			console.log(err);
+			return queryClient.setQueryData('palettes', previousValue);
 		},
-		body: JSON.stringify({ query: query })
-	}).then(res => res.json());
+		onSettled: () => {
+			console.log('isWorking');
+			queryClient.invalidateQueries('palettes');
+		}
+	});
 };
-
-export { getPalettes, createPalette, deletePalette, resetPalettes };

@@ -30,8 +30,8 @@ export const NewPaletteForm = props => {
 		.getQueryData('palettes')
 		.data.allPalettes.map(palette => palette.paletteName);
 
-	const { data, isSuccess } = useGetColors('colors');
-	const allColors = isSuccess ? data.data.allColors : [];
+	const { data } = useGetColors('colors');
+	const allColors = data ? data.data.allColors : [];
 	/*----------------------useState----------------------*/
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -40,33 +40,34 @@ export const NewPaletteForm = props => {
 	const [colors, setColors] = useState([]);
 	const [currentName, setCurrentName] = useState('');
 	const [currentPaletteName, setCurrentPaletteName] = useState('');
-
+	/*----------------------setColors to fetched colors----------------------*/
 	useEffect(() => {
 		if (data) setColors(generateRandomArray(data.data.allColors));
 	}, [data]);
 
 	/*----------------------validation----------------------*/
 	useEffect(() => {
-		ValidatorForm.addValidationRule('isColorNameUnique', value =>
-			colors.every(({ name }) => name.toLowerCase() !== currentName.toLowerCase())
-		);
+		ValidatorForm.addValidationRule('isColorNameUnique', value => {
+			let isUnique = (toCompare, array) =>
+				array.every(({ name }) => name.toLowerCase() !== toCompare.toLowerCase());
+			return isUnique(value, colors) && isUnique(value, allColors);
+		});
 		ValidatorForm.addValidationRule('isColorUnique', value =>
-			colors.every(({ color }) => color !== currentColor)
+			colors.every(
+				({ color }) => color.toLowerCase() !== currentColor.toLowerCase()
+			)
 		);
-		ValidatorForm.addValidationRule(
-			'isPaletteNameUnique',
-			value =>
-				!palettesName.every(
-					paletteName =>
-						paletteName.toLowerCase() !== currentPaletteName.toLowerCase()
-				)
+		ValidatorForm.addValidationRule('isPaletteNameUnique', value =>
+			palettesName.every(
+				paletteName => paletteName.toLowerCase() !== value.toLowerCase()
+			)
 		);
 		return function cleanup() {
 			ValidatorForm.removeValidationRule('isColorNameUnique');
 			ValidatorForm.removeValidationRule('isColorUnique');
 			ValidatorForm.removeValidationRule('isPaletteNameUnique');
 		};
-	}, [colors, currentName, currentColor, currentPaletteName, palettesName]);
+	}, [colors, allColors, palettesName, currentColor]);
 	/*----------------------handlers----------------------*/
 	const handleDrawerOpen = () => setIsDrawerOpen(true);
 	const handleDrawerClose = () => setIsDrawerOpen(false);
@@ -86,6 +87,7 @@ export const NewPaletteForm = props => {
 			}
 		]);
 		setCurrentName('');
+		setCurrentColor('');
 	};
 	const deleteColor = name =>
 		setColors(colors.filter(color => color.name !== name));

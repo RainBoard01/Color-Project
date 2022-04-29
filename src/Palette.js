@@ -3,23 +3,13 @@ import { ColorBox } from './ColorBox';
 import { Navbar } from './Navbar';
 import { PaletteFooter } from './PaletteFooter';
 import './Palette.css';
-import { useQueryClient } from 'react-query';
 import { useGeneratePalette } from './hooks/useGeneratePalette';
 
 export const Palette = props => {
 	const [level, setLevel] = useState(500);
 	const [format, setFormat] = useState('hex');
 
-	const queryClient = useQueryClient();
-	const palettes = queryClient.getQueryData('palettes')
-		? queryClient.getQueryData('palettes').data.allPalettes
-		: [];
-
-	const palette = palettes
-		? palettes.filter(palette => palette.id === props.paletteId)[0]
-		: {};
-
-	const { colors, paletteName, emoji, id } = useGeneratePalette(palette);
+	const { colors, paletteName, emoji, id } = useGeneratePalette(props.paletteId);
 
 	return (
 		<div className='Palette'>

@@ -28,9 +28,10 @@ function App() {
 				exact
 				path='/palette/:paletteId/:colorId'
 				render={routeProps => (
-					<SingleColorPalette colorId={routeProps.match.params.colorId}>
-						Single Page
-					</SingleColorPalette>
+					<SingleColorPalette
+						colorId={routeProps.match.params.colorId}
+						paletteId={routeProps.match.params.paletteId}
+					/>
 				)}
 			/>
 		</Switch>
