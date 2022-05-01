@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { ColorBox } from './ColorBox';
-import { Navbar } from './Navbar';
-import { PaletteFooter } from './PaletteFooter';
+import { ColorBox } from '../components/ColorBox';
+import { Navbar } from '../components/Navbar';
+import { PaletteFooter } from '../components/PaletteFooter';
 import './Palette.css';
-import { useGeneratePalette } from './hooks/useGeneratePalette';
+import { useGeneratePalette } from '../hooks/useGeneratePalette';
 
 export const Palette = props => {
 	const [level, setLevel] = useState(500);

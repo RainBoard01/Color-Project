@@ -1,16 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import './Card.css';
-import { useDeletePalette } from './hooks/useDeletePalette';
-import { useGetColors } from './hooks/useGetColors';
+import { useDeletePalette } from '../hooks/useDeletePalette';
+import { useGetColors } from '../hooks/useGetColors';
 
 export const Card = props => {
 	const { _id, id, paletteName, emoji, handleClick } = props;
+	const colorsOnLocalStorage = JSON.parse(
+		window.localStorage.getItem(`["colors",${id}]`)
+	);
 
 	const { mutate } = useDeletePalette();
-	const { data, isLoading } = useGetColors(['colors', id], id);
 
-	const colors = !isLoading ? data.data.allColors : [];
+	const [colors, setColors] = useState(colorsOnLocalStorage || []);
+	useGetColors(['colors', id], id, {
+		onSuccess: data => {
+			window.localStorage.setItem(
+				`["colors",${id}]`,
+				JSON.stringify(data.data.allColors)
+			);
+			setColors(data.data.allColors);
+		}
+	});
 
 	const handleDelete = e => {
 		e.stopPropagation();

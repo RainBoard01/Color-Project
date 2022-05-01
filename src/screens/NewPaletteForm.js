@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Box, CssBaseline } from '@mui/material';
 import { ValidatorForm } from 'react-material-ui-form-validator';
 
-import { Appbar } from './Appbar';
-import { DrawerC } from './DrawerC';
-import { NewPalette } from './NewPalette';
-import { useCreatePalette } from './hooks/useCreatePalette';
-import { useGetColors } from './hooks/useGetColors';
-import { useQueryClient } from 'react-query';
+import { Appbar } from '../components/Appbar';
+import { DrawerC } from '../components/DrawerC';
+import { NewPalette } from '../components/NewPalette';
+import { useCreatePalette } from '../hooks/useCreatePalette';
+import { useGetColors } from '../hooks/useGetColors';
+import { useGetPalettes } from '../hooks/useGetPalettes';
 
 const generateRandomArray = array => {
+	if (array.length === 0) return [];
 	const newArray = [];
 	const arrayRndNumbers = [];
 	for (let i = 0; i < 20; i++) {
@@ -25,25 +26,50 @@ const generateRandomArray = array => {
 };
 
 export const NewPaletteForm = props => {
-	const createPalette = useCreatePalette();
-	const palettesName = useQueryClient()
-		.getQueryData('palettes')
-		.data.allPalettes.map(palette => palette.paletteName);
+	/*--------------getlocalstorage if exist----------------*/
+	const allColorsOnLocalStorage = JSON.parse(
+		window.localStorage.getItem(`["colors"]`)
+	);
+	const palettesOnLocalStorage = JSON.parse(
+		window.localStorage.getItem(`["palettes"]`)
+	);
 
-	const { data } = useGetColors('colors');
-	const allColors = data ? data.data.allColors : [];
 	/*----------------------useState----------------------*/
+	const [palettesName, setPalettesName] = useState(
+		palettesOnLocalStorage.map(palette => palette.paletteName) || []
+	);
+	const [allColors, setAllColors] = useState(allColorsOnLocalStorage || []);
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [isEmojiOpen, setIsEmojiOpen] = useState(false);
 	const [currentColor, setCurrentColor] = useState('');
-	const [colors, setColors] = useState([]);
+
+	const [colors, setColors] = useState(generateRandomArray(allColors));
 	const [currentName, setCurrentName] = useState('');
 	const [currentPaletteName, setCurrentPaletteName] = useState('');
-	/*----------------------setColors to fetched colors----------------------*/
-	useEffect(() => {
-		if (data) setColors(generateRandomArray(data.data.allColors));
-	}, [data]);
+
+	/*------------query and mutate hooks------------*/
+	useGetColors('colors', null, {
+		onSuccess: data => {
+			window.localStorage.setItem(
+				`["colors"]`,
+				JSON.stringify(data.data.allColors)
+			);
+			setAllColors(data.data.allColors);
+			if (allColorsOnLocalStorage === null)
+				setColors(generateRandomArray(data.data.allColors));
+		}
+	});
+	useGetPalettes('palettes', {
+		onSuccess: data => {
+			window.localStorage.setItem(
+				`["palettes"]`,
+				JSON.stringify(data.data.allPalettes)
+			);
+			setPalettesName(data.data.allPalettes.map(palette => palette.paletteName));
+		}
+	});
+	const createPalette = useCreatePalette();
 
 	/*----------------------validation----------------------*/
 	useEffect(() => {
@@ -68,6 +94,7 @@ export const NewPaletteForm = props => {
 			ValidatorForm.removeValidationRule('isPaletteNameUnique');
 		};
 	}, [colors, allColors, palettesName, currentColor]);
+
 	/*----------------------handlers----------------------*/
 	const handleDrawerOpen = () => setIsDrawerOpen(true);
 	const handleDrawerClose = () => setIsDrawerOpen(false);
@@ -118,6 +145,7 @@ export const NewPaletteForm = props => {
 
 	/*----------------------misc----------------------*/
 	const isPaletteFull = colors.length >= 20;
+
 	/*----------------------component----------------------*/
 	return (
 		<Box sx={{ display: 'flex' }}>

@@ -1,7 +1,7 @@
-import { Palette } from './Palette';
-import { PaletteList } from './PaletteList';
-import { NewPaletteForm } from './NewPaletteForm';
-import { SingleColorPalette } from './SingleColorPalette';
+import { Palette } from './screens/Palette';
+import { PaletteList } from './screens/PaletteList';
+import { NewPaletteForm } from './screens/NewPaletteForm';
+import { SingleColorPalette } from './screens/SingleColorPalette';
 import { Route, Switch } from 'react-router-dom';
 
 function App() {
@@ -9,13 +9,13 @@ function App() {
 		<Switch>
 			<Route
 				exact
-				path='/palette/new'
-				render={routeProps => <NewPaletteForm {...routeProps} />}
+				path='/'
+				render={routeProps => <PaletteList {...routeProps} />}
 			/>
 			<Route
 				exact
-				path='/'
-				render={routeProps => <PaletteList {...routeProps} />}
+				path='/palette/new'
+				render={routeProps => <NewPaletteForm {...routeProps} />}
 			/>
 			<Route
 				exact

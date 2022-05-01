@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ColorBox } from './ColorBox';
-import { Navbar } from './Navbar';
-import { PaletteFooter } from './PaletteFooter';
-import { useGeneratePalette } from './hooks/useGeneratePalette';
+import { ColorBox } from '../components/ColorBox';
+import { Navbar } from '../components/Navbar';
+import { PaletteFooter } from '../components/PaletteFooter';
+import { useGeneratePalette } from '../hooks/useGeneratePalette';
 
 export const SingleColorPalette = props => {
 	const { paletteId, colorId } = props;

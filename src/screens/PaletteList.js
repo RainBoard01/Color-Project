@@ -1,12 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './PaletteList.css';
-import { Card } from './Card';
-import { useGetPalettes } from './hooks/useGetPalettes';
+import { Card } from '../components/Card';
+import { useGetPalettes } from '../hooks/useGetPalettes';
 
 export const PaletteList = props => {
-	const { data, isLoading } = useGetPalettes('palettes');
-	const palettes = !isLoading ? data.data.allPalettes : [];
+	const palettesOnLocalStorage = JSON.parse(
+		window.localStorage.getItem(`["palettes"]`)
+	);
+	const [palettes, setPalettes] = useState(palettesOnLocalStorage || []);
+	useGetPalettes('palettes', {
+		onSuccess: data => {
+			window.localStorage.setItem(
+				`["palettes"]`,
+				JSON.stringify(data.data.allPalettes)
+			);
+			setPalettes(data.data.allPalettes);
+		}
+	});
 
 	const goToPalette = id => props.history.push(`/palette/${id}`);
 

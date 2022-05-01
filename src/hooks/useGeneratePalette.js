@@ -1,4 +1,5 @@
 import chroma from 'chroma-js';
+import { useState } from 'react';
 import { useGetColors } from './useGetColors';
 import { useGetPalette } from './useGetPalette';
 
@@ -14,19 +15,39 @@ const getRange = hexColor => {
 };
 
 export const useGeneratePalette = paletteId => {
-	const usePalette = useGetPalette(['palette', paletteId], paletteId);
+	const paletteOnLocalStorage = JSON.parse(
+		window.localStorage.getItem(`["palette",${paletteId}]`)
+	);
+	const colorsOnLocalStorage = JSON.parse(
+		window.localStorage.getItem(`["colors",${paletteId}]`)
+	);
 
-	const starterPalette = usePalette.data
-		? usePalette.data.data.findPaletteByID
-		: {};
+	const [palette, setPalette] = useState(paletteOnLocalStorage || {});
+	useGetPalette(['palette', paletteId], paletteId, {
+		onSuccess: data => {
+			window.localStorage.setItem(
+				`["palette",${paletteId}]`,
+				JSON.stringify(data.data.findPaletteByID)
+			);
+			setPalette(data.data.findPaletteByID);
+		}
+	});
 
-	const useColors = useGetColors(['colors', paletteId], paletteId);
-	const colors =
-		useColors.data && starterPalette ? useColors.data.data.allColors : [];
+	const [colors, setColors] = useState(colorsOnLocalStorage || []);
+	useGetColors(['colors', paletteId], paletteId, {
+		onSuccess: data => {
+			window.localStorage.setItem(
+				`["colors",${paletteId}]`,
+				JSON.stringify(data.data.allColors)
+			);
+			setColors(data.data.allColors);
+		}
+	});
+
 	let newPalette = {
-		paletteName: starterPalette.paletteName,
-		id: starterPalette.id,
-		emoji: starterPalette.emoji,
+		paletteName: palette.paletteName,
+		id: palette.id,
+		emoji: palette.emoji,
 		colors: {}
 	};
 	for (let level of levels) {
