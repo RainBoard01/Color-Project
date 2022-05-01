@@ -1,84 +1,27 @@
-import { useState, useEffect } from 'react';
-import { Palette } from './Palette';
-import { PaletteList } from './PaletteList';
-import { NewPaletteForm } from './NewPaletteForm';
-import { SingleColorPalette } from './SingleColorPalette';
+import { Palette } from './screens/Palette';
+import { PaletteList } from './screens/PaletteList';
+import { NewPaletteForm } from './screens/NewPaletteForm';
+import { SingleColorPalette } from './screens/SingleColorPalette';
 import { Route, Switch } from 'react-router-dom';
-import { generatePalette } from './colorHelpers';
-import {
-	getPalettes,
-	createPalette,
-	deletePalette,
-	resetPalettes
-} from './api';
 
 function App() {
-	const savedPalettes = JSON.parse(window.localStorage.getItem('palettes'));
-	const [data, setData] = useState(savedPalettes || []);
-
-	const getData = async () =>
-		await getPalettes().then(result => {
-			window.localStorage.setItem('palettes', JSON.stringify(result));
-			setData(result);
-		});
-
-	const handleSavePalette = async newPalette => {
-		await createPalette(newPalette);
-		getData();
-	};
-
-	const handleDeletePalette = async (event, paletteId) => {
-		event.stopPropagation();
-		await deletePalette(paletteId);
-		await getData().then(async () => {
-			if (JSON.parse(window.localStorage.getItem('palettes')).length === 0)
-				await resetPalettes().then(async () => await getData());
-		});
-	};
-
-	useEffect(() => getData(), []);
-
-	function findPaletteById(id) {
-		for (let i = 0; i < data.length; i++) {
-			if (data[i].id === id) {
-				return i;
-			}
-		}
-	}
-
 	return (
 		<Switch>
 			<Route
 				exact
-				path='/palette/new'
-				render={routeProps => (
-					<NewPaletteForm
-						savePalette={handleSavePalette}
-						data={data}
-						{...routeProps}
-					/>
-				)}
+				path='/'
+				render={routeProps => <PaletteList {...routeProps} />}
 			/>
 			<Route
 				exact
-				path='/'
-				render={routeProps => (
-					<PaletteList
-						palettes={data}
-						deletePalette={handleDeletePalette}
-						{...routeProps}
-					/>
-				)}
+				path='/palette/new'
+				render={routeProps => <NewPaletteForm {...routeProps} />}
 			/>
 			<Route
 				exact
 				path='/palette/:paletteId'
 				render={routeProps => (
-					<Palette
-						palette={generatePalette(
-							data[findPaletteById(routeProps.match.params.paletteId)]
-						)}
-					/>
+					<Palette paletteId={routeProps.match.params.paletteId} />
 				)}
 			/>
 			<Route
@@ -86,13 +29,9 @@ function App() {
 				path='/palette/:paletteId/:colorId'
 				render={routeProps => (
 					<SingleColorPalette
-						palette={generatePalette(
-							data[findPaletteById(routeProps.match.params.paletteId)]
-						)}
 						colorId={routeProps.match.params.colorId}
-					>
-						Single Page
-					</SingleColorPalette>
+						paletteId={routeProps.match.params.paletteId}
+					/>
 				)}
 			/>
 		</Switch>
